@@ -23,8 +23,8 @@ var samlStrategy = new saml.Strategy({
   entryPoint: process.env.ENTRY_POINT,
   issuer: process.env.ISSUER,
   identifierFormat: null,
-  decryptionPvk: fs.readFileSync(__dirname + '/key.pem'),
-  cert: fs.readFileSync(__dirname + '/idp_cert.pem')
+  decryptionPvk: fs.readFileSync(__dirname + '/key.pem', 'utf8'),
+  cert: fs.readFileSync(__dirname + '/idp_cert.pem', 'utf8')
 }, function(profile, done) {
   return done(null, profile); 
 });
@@ -60,7 +60,7 @@ app.get('/login/fail',
 app.get('/Shibboleth.sso/Metadata', 
   function(req, res) {
     res.type('application/xml');
-    res.send(samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert.pem')));
+    res.status(200).send(samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert.pem', 'utf8')));
   }
 );
 
