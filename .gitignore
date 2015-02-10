@@ -1,3 +1,4 @@
+.env
 cert.pem
 idp_cert.pem
 key.pem

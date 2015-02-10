@@ -5,6 +5,7 @@
   "dependencies": {
     "body-parser": "1.11.0",
     "cookie-parser": "1.3.3",
+    "dotenv": "0.5.1",
     "express": "4.11.2",
     "express-session": "1.10.2",
     "passport": "0.2.1",

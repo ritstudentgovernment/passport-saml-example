@@ -1,11 +1,14 @@
 var http = require('http');
 var fs = require('fs');
 var express = require("express");
+var dotenv = require('dotenv');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
 var saml = require('passport-saml');
+
+dotenv.load();
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -16,9 +19,9 @@ passport.deserializeUser(function(user, done) {
 });
 
 var samlStrategy = new saml.Strategy({
-  callbackUrl: 'https://evals-test.rit.edu/login/callback',
-  entryPoint: 'https://shibboleth.main.ad.rit.edu/idp/profile/SAML2/Redirect/SSO',
-  issuer: 'https://evals-test.rit.edu/shibboleth',
+  callbackUrl: process.env.CALLBACK_URL,
+  entryPoint: process.env.ENTRY_POINT,
+  issuer: process.env.ISSUER,
   identifierFormat: null,
   decryptionPvk: fs.readFileSync(__dirname + '/key.pem'),
   cert: fs.readFileSync(__dirname + '/idp_cert.pem')
@@ -50,14 +53,14 @@ app.post('/login/callback',
 
 app.get('/login/fail', 
   function(req, res) {
-    res.send(401, 'Login failed');
+    res.status(401).send('Login failed');
   }
 );
 
 app.get('/Shibboleth.sso/Metadata', 
   function(req, res) {
     res.type('application/xml');
-    res.send(200, samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert.pem')));
+    res.send(samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert.pem')));
   }
 );
 
