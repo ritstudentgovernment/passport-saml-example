@@ -29,7 +29,9 @@ var samlStrategy = new saml.Strategy({
   // Service Provider private key
   decryptionPvk: fs.readFileSync(__dirname + '/key.pem', 'utf8'),
   // Identity Provider's public key
-  cert: fs.readFileSync(__dirname + '/idp_cert.pem', 'utf8')
+  cert: fs.readFileSync(__dirname + '/idp_cert.pem', 'utf8'),
+  validateInResponseTo: false,
+  disableRequestedAuthnContext: true
 }, function(profile, done) {
   return done(null, profile); 
 });
@@ -37,15 +39,32 @@ var samlStrategy = new saml.Strategy({
 passport.use(samlStrategy);
 
 var app = express();
-app.use(bodyParser.urlencoded({extended: true}));
+
+
 app.use(cookieParser());
+app.use(bodyParser());
+app.use(session({secret: process.env.SESSION_SECRET}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  else
+    return res.redirect('/login');
+}
+
 app.get('/',
-  passport.authenticate('saml', {failureRedirect: '/login/fail'}),  
+  ensureAuthenticated, 
   function(req, res) {
     res.send('Authenticated');
+  }
+);
+
+app.get('/login',
+  passport.authenticate('saml', { failureRedirect: '/login/fail' }),
+  function (req, res) {
+    res.redirect('/');
   }
 );
 
