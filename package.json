@@ -1,0 +1,13 @@
+{
+  "name": "passport-saml-rit-example",
+  "version": "0.0.0",
+  "description": "An example web app that connects to RIT's SSO Shibboleth Identity Provider.", 
+  "dependencies": {
+    "body-parser": "1.11.0",
+    "cookie-parser": "1.3.3",
+    "express": "4.11.2",
+    "express-session": "1.10.2",
+    "passport": "0.2.1",
+    "passport-saml": "0.9.0"
+  }
+}
