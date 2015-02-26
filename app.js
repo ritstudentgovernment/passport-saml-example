@@ -27,9 +27,11 @@ var samlStrategy = new saml.Strategy({
   issuer: process.env.ISSUER,
   identifierFormat: null,
   // Service Provider private key
-  decryptionPvk: fs.readFileSync(__dirname + '/key.pem', 'utf8'),
+  decryptionPvk: fs.readFileSync(__dirname + '/cert/key.pem', 'utf8'),
+  // Service Provider Certificate
+  privateCert: fs.readFileSync(__dirname + '/cert/key.pem', 'utf8'),
   // Identity Provider's public key
-  cert: fs.readFileSync(__dirname + '/idp_cert.pem', 'utf8'),
+  cert: fs.readFileSync(__dirname + '/cert/idp_cert.pem', 'utf8'),
   validateInResponseTo: false,
   disableRequestedAuthnContext: true
 }, function(profile, done) {
@@ -39,7 +41,6 @@ var samlStrategy = new saml.Strategy({
 passport.use(samlStrategy);
 
 var app = express();
-
 
 app.use(cookieParser());
 app.use(bodyParser());
@@ -84,7 +85,7 @@ app.get('/login/fail',
 app.get('/Shibboleth.sso/Metadata', 
   function(req, res) {
     res.type('application/xml');
-    res.status(200).send(samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert.pem', 'utf8')));
+    res.status(200).send(samlStrategy.generateServiceProviderMetadata(fs.readFileSync(__dirname + '/cert/cert.pem', 'utf8')));
   }
 );
 
