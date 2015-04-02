@@ -15,7 +15,7 @@ Creating Private Key and Certificates
 =====================================
 
 Generate the SP files with the following command:
-- `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 900`
+- `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes -days 900`
 
 The IdP Certificate is contained within the `ds:X509Certificate` tag.
 - Copy the tag's contents into a file named `cert_idp.pem`.
