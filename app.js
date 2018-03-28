@@ -43,8 +43,13 @@ passport.use(samlStrategy);
 var app = express();
 
 app.use(cookieParser());
-app.use(bodyParser());
-app.use(session({secret: process.env.SESSION_SECRET}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: true,
+    saveUninitialized: false,
+  }));
 app.use(passport.initialize());
 app.use(passport.session());
 
